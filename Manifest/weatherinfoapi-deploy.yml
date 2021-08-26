@@ -1,0 +1,35 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: weatherinfoapi-service
+spec:
+  selector:
+    app: weatherinfoapi-pod
+  ports:
+  - port: 8080
+    targetPort: 5000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weatherinfoapi-deployment
+spec:
+  selector:
+    matchLabels:
+      app: weatherinfoapi-pod
+  template:
+    metadata:
+      labels:
+        app: weatherinfoapi-pod
+    spec:
+      containers:
+      - name: weatherinfoapi-container
+        image: __containerRegistryName__/weatherinfoapi:__Build.BuildId__
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000
